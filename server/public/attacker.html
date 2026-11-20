@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adversary Exploit Console // Target: Grid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e;
+      --panel: #0d111a;
+      --border: #1e2638;
+      --red: #ef4444;
+      --green: #10b981;
+      --cyan: #06b6d4;
+      --amber: #f59e0b;
+      --text: #e2e8f0;
+      --text-dim: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      padding: 1.25rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.5;
+    }
+    .terminal-container {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .terminal-header {
+      border-bottom: 2px solid var(--red);
+      padding-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .terminal-title {
+      color: var(--red);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .target-badge {
+      font-size: 0.75rem;
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 0.2rem 0.6rem;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 4px;
+    }
+    .info-card {
+      background-color: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 0.8rem;
+    }
+    .info-card span { color: var(--text-dim); }
+    .client-spec { color: var(--cyan); }
+    .attack-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .attack-card {
+      background-color: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 6px;
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .attack-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .attack-name { font-size: 0.95rem; font-weight: 700; color: #fff; }
+    .attack-tag { font-size: 0.7rem; color: var(--red); background: rgba(239, 68, 68, 0.12); padding: 0.2rem 0.5rem; border-radius: 4px; }
+    .attack-desc { font-size: 0.8rem; color: var(--text-dim); }
+    .input-field {
+      width: 100%;
+      background-color: #040508;
+      border: 1px solid var(--border);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.65rem 0.85rem;
+      border-radius: 4px;
+      font-size: 0.825rem;
+      outline: none;
+    }
+    .input-field:focus { border-color: var(--red); }
+    .btn-attack {
+      background-color: rgba(239, 68, 68, 0.18);
+      color: #fca5a5;
+      border: 1px solid var(--red);
+      padding: 0.65rem 1rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.825rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 140ms ease;
+      min-height: 44px;
+    }
+    .btn-attack:hover {
+      background-color: var(--red);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    }
+    .btn-attack:active { transform: scale(0.98); }
+    .output-console {
+      background-color: #030407;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 0.78rem;
+      color: var(--green);
+      min-height: 120px;
+      max-height: 240px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .output-console .err { color: #f87171; }
+  </style>
+</head>
+<body>
+
+  <div class="terminal-container">
+    <header class="terminal-header">
+      <div>
+        <h1 class="terminal-title">&gt; ADVERSARY_EXPLOIT_WORKSTATION</h1>
+        <p style="font-size:0.75rem; color:var(--text-dim);">DEVICE A: ATTACKER RECONNAISSANCE CONSOLE</p>
+      </div>
+      <div class="target-badge">TARGET: 172.100.2.71:5000</div>
+    </header>
+
+    <!-- Detected Device A Client Info -->
+    <div class="info-card">
+      <div><span>[+] ATTACKER CLIENT DETECTED: </span><span id="clientAgent" class="client-spec">Detecting...</span></div>
+      <div><span>[+] SCREEN SPECIFICATION:  </span><span id="clientScreen" class="client-spec">Detecting...</span></div>
+      <div><span>[+] CLIENT HARDWARE HASH:    </span><span id="clientFp" class="client-spec" style="color:var(--amber);">Extracting...</span></div>
+    </div>
+
+    <!-- Live Execution Console Log -->
+    <div class="output-console" id="consoleLog">
+&gt; Ready. Select an exploit vector below to attack the Cyber Deception Grid...
+    </div>
+
+    <div class="attack-grid">
+      <!-- Attack 1: Directory Traversal on SQL Dump -->
+      <div class="attack-card">
+        <div class="attack-top">
+          <span class="attack-name">1. Directory Traversal / Backup Scraper</span>
+          <span class="attack-tag">PROBE</span>
+        </div>
+        <p class="attack-desc">Probe target server for hidden administrative database dumps.</p>
+        <button class="btn-attack" onclick="executeProbe('/api/v1/auth/admin-backup.sql', 'GET', 'Web Directory Traversal & Backup Scraping')">
+          💥 Execute Probe on /api/v1/auth/admin-backup.sql
+        </button>
+      </div>
+
+      <!-- Attack 2: Sensitive Environment Variable Scraping -->
+      <div class="attack-card">
+        <div class="attack-top">
+          <span class="attack-name">2. Server Environment Exfiltration</span>
+          <span class="attack-tag">EXFILTRATE</span>
+        </div>
+        <p class="attack-desc">Attempt to scrape root environment variables and server secrets.</p>
+        <button class="btn-attack" onclick="executeProbe('/.env', 'GET', 'Environment File Exfiltration Probe')">
+          💥 Execute Probe on /.env
+        </button>
+      </div>
+
+      <!-- Attack 3: Leaked Canary Secret Key Injection -->
+      <div class="attack-card">
+        <div class="attack-top">
+          <span class="attack-name">3. Exploit Leaked Canary API Key</span>
+          <span class="attack-tag">AUTH BYPASS</span>
+        </div>
+        <p class="attack-desc">Use a stolen secret key found in public code repositories.</p>
+        <button class="btn-attack" onclick="executeApiKeyAttack()">
+          💥 Exploit Key: sk_live_canary_99x821_internal
+        </button>
+      </div>
+
+      <!-- Attack 4: Custom SQL / NoSQL Injection on Admin Portal -->
+      <div class="attack-card">
+        <div class="attack-top">
+          <span class="attack-name">4. Honeypot Admin Brute-Force &amp; Injection</span>
+          <span class="attack-tag">INJECTION</span>
+        </div>
+        <p class="attack-desc">Submit custom injection payloads or brute-force administrative credentials.</p>
+        <input type="text" id="customPayload" class="input-field" placeholder="e.g. admin_root' OR '1'='1" value="admin_root' OR '1'='1" />
+        <button class="btn-attack" onclick="executeCustomAuth()">
+          💥 Inject Credential Payload into /superadmin/auth
+        </button>
+      </div>
+
+      <!-- Attack 5: Exploit Leaked Pastebin Credentials & Exfiltrate 50 Accounts -->
+      <div class="attack-card" style="border-left-color:#38bdf8;">
+        <div class="attack-top">
+          <span class="attack-name" style="color:#38bdf8;">5. Exfiltrate 50 Corporate Google Accounts</span>
+          <span class="attack-tag" style="color:#38bdf8; background:rgba(56, 189, 248, 0.15);">DATABASE THEFT</span>
+        </div>
+        <p class="attack-desc">
+          Exploit third-party leaked credentials (e.g. sjenkins : P@ssw0rd!2026_Root) to breach the portal and exfiltrate 50 employee Google Workspace accounts.
+        </p>
+        <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+          <button class="btn-attack" style="flex:1; border-color:#38bdf8; color:#7dd3fc; background:rgba(56,189,248,0.15);" onclick="execute50AccountsBreach()">
+            💥 Exploit Credential &amp; Breach 50 Accounts
+          </button>
+          <a href="/superadmin/vault" target="_blank" class="btn-attack" style="text-decoration:none; border-color:#10b981; color:#34d399; background:rgba(16,185,129,0.15);">
+            🔓 View Exfiltrated Vault
+          </a>
+          <a href="/superadmin/portal" target="_blank" class="btn-attack" style="text-decoration:none; border-color:#f59e0b; color:#fbbf24; background:rgba(245,158,11,0.15);">
+            🌐 Open Admin Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Extract real Device A client details
+    const userAgent = navigator.userAgent;
+    const screenSpec = `${window.screen.width}x${window.screen.height} (${window.devicePixelRatio}x)`;
+    document.getElementById('clientAgent').innerText = userAgent;
+    document.getElementById('clientScreen').innerText = screenSpec;
+
+    // Generate real hardware canvas entropy hash on Device A
+    function getHardwareHash() {
+      try {
+        const c = document.createElement('canvas');
+        c.width = 200; c.height = 40;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(10, 10, 80, 20);
+        ctx.fillStyle = '#06b6d4'; ctx.fillText('HackerDevice://' + screenSpec, 15, 25);
+        const b64 = c.toDataURL();
+        let h = 5381;
+        for (let i = 0; i < b64.length; i++) { h = ((h << 5) + h) + b64.charCodeAt(i); h = h & h; }
+        return 'fp_devA_' + Math.abs(h).toString(16).padStart(8, '0');
+      } catch (e) {
+        return 'fp_devA_generic';
+      }
+    }
+
+    const deviceAHash = getHardwareHash();
+    document.getElementById('clientFp').innerText = deviceAHash;
+
+    const logBox = document.getElementById('consoleLog');
+    function log(msg, isErr = false) {
+      const time = new Date().toLocaleTimeString();
+      const line = `[${time}] ${msg}\n`;
+      if (isErr) {
+        logBox.innerHTML += `<span class="err">${line}</span>`;
+      } else {
+        logBox.innerHTML += line;
+      }
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    async function executeProbe(endpoint, method, vector) {
+      log(`[!] Sending ${method} payload to ${endpoint}...`);
+      try {
+        const res = await fetch(endpoint, { method, headers: { 'X-Device-Fingerprint': deviceAHash } });
+        log(`[-] Target Response: HTTP ${res.status} ${res.statusText}`);
+        log(`[+] SUCCESS: Trap detonated! Device A IP & fingerprint logged to defender database.\n`);
+      } catch (err) {
+        log(`[-] Sent exploit packet to ${endpoint}`);
+        log(`[+] SUCCESS: Trap detonated! Device A IP & fingerprint logged to defender database.\n`);
+      }
+    }
+
+    async function executeApiKeyAttack() {
+      log(`[!] Attempting unauthorized API access using Canary Key...`);
+      try {
+        const res = await fetch('/api/decoys', {
+          headers: {
+            'x-api-key': 'sk_live_canary_99x821_internal',
+            'X-Device-Fingerprint': deviceAHash
+          }
+        });
+        log(`[-] Server Response: HTTP ${res.status}`);
+        log(`[+] SUCCESS: Canary Key Interceptor tripped! Device A identity captured.\n`);
+      } catch (err) {
+        log(`[-] Key exploit packet transmitted.`);
+      }
+    }
+
+    async function executeCustomAuth() {
+      const payloadVal = document.getElementById('customPayload').value;
+      log(`[!] Injecting payload into /superadmin/auth: "${payloadVal}"...`);
+      try {
+        const res = await fetch('/superadmin/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Device-Fingerprint': deviceAHash },
+          body: JSON.stringify({ username: payloadVal, password: 'password123' })
+        });
+        log(`[-] Server Response: HTTP ${res.status}`);
+        log(`[+] SUCCESS: Honeypot Auth tripped! Payload "${payloadVal}" captured by defender!\n`);
+      } catch (err) {
+        log(`[-] Injection packet sent.`);
+      }
+    }
+    async function execute50AccountsBreach() {
+      log(`[!] Exploiting leaked credential "sjenkins" (P@ssw0rd!2026_Root) against /superadmin/auth...`);
+      try {
+        const res = await fetch('/superadmin/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-Device-Fingerprint': deviceAHash },
+          body: JSON.stringify({ username: 'sjenkins', password: 'P@ssw0rd!2026_Root' })
+        });
+        const data = await res.json().catch(() => null);
+        log(`[-] Target Gateway Response: HTTP 200 OK (Privileged Session Token Issued)`);
+        log(`[+] SUCCESS: Exfiltrated 50 Corporate Google Accounts! Attacker IP & Device A Fingerprint logged to SOC ledger.`);
+        log(`[+] Vault is accessible at /superadmin/vault\n`);
+      } catch (err) {
+        log(`[-] Exploit payload transmitted.`);
+      }
+    }
+  </script>
+</body>
+</html>

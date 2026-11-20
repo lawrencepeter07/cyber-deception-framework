@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexaTech Solutions &bull; Microsoft 365 Enterprise Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            msBlue: '#0078D4',
+            msBlueHover: '#005A9E',
+            msBlueLight: '#EFF6FC',
+            teamsPurple: '#5B5FC7',
+            teamsDark: '#444791',
+            teamsNav: '#2B2B30',
+            fluentSurface: '#FFFFFF',
+            fluentSubtle: '#F3F2F1',
+            fluentDarkSurface: '#201F1E',
+            fluentDarkSubtle: '#292827',
+          },
+          fontFamily: {
+            sans: ['"Segoe UI"', 'Inter', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Segoe UI', Inter, -apple-system, sans-serif; }
+    .fluent-shadow { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04); }
+    .fluent-card { transition: all 140ms ease; }
+    .fluent-card:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-[#201F1E] dark:bg-[#11100F] dark:text-[#F3F2F1] min-h-screen flex flex-col antialiased select-none overflow-x-hidden">
+
+  <!-- ========================================================================= -->
+  <!-- 1. MICROSOFT 365 TOP NAVIGATION BAR -->
+  <!-- ========================================================================= -->
+  <header class="h-12 bg-msBlue dark:bg-[#0F6CBD] text-white flex items-center justify-between px-3 z-30 shrink-0 shadow-sm">
+    <!-- Left: Waffle Icon + Organization Name -->
+    <div class="flex items-center space-x-3">
+      <!-- 9-Dot App Launcher (Waffle) -->
+      <button onclick="toggleWaffle()" class="p-1.5 hover:bg-white/10 rounded transition text-white" title="App Launcher">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16">
+          <circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/><circle cx="14" cy="2" r="1.5"/>
+          <circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="14" cy="8" r="1.5"/>
+          <circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/><circle cx="14" cy="14" r="1.5"/>
+        </svg>
+      </button>
+
+      <div class="flex items-center space-x-2">
+        <span class="font-bold tracking-tight text-sm text-white">NexaTech Solutions</span>
+        <span class="text-[11px] font-normal text-white/80 hidden sm:inline">&bull; Microsoft 365 Intranet</span>
+      </div>
+    </div>
+
+    <!-- Center: Global Search Bar (Ctrl+K) -->
+    <div class="flex-1 max-w-xl mx-4 hidden md:block">
+      <div class="relative">
+        <input
+          type="text"
+          id="globalSearchInput"
+          placeholder="Search people, files, chats, teams (Ctrl+K)..."
+          onfocus="openCommandPalette()"
+          class="w-full bg-white/15 text-white placeholder-white/70 text-xs rounded-md pl-8 pr-12 py-1.5 border border-white/20 focus:bg-white focus:text-slate-900 focus:placeholder-slate-400 outline-none transition"
+        />
+        <svg class="w-3.5 h-3.5 text-white/70 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="absolute right-2 top-1.5 text-[10px] text-white/60 bg-white/10 px-1 rounded font-mono">⌘K</span>
+      </div>
+    </div>
+
+    <!-- Right Actions: Notifications, Help, Settings, Profile -->
+    <div class="flex items-center space-x-2">
+      <!-- Notification Bell -->
+      <div class="relative">
+        <button onclick="toggleNotifications()" class="p-1.5 hover:bg-white/10 rounded transition relative" title="Notifications">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-400 rounded-full"></span>
+        </button>
+
+        <!-- Notifications Dropdown Panel -->
+        <div id="notificationsDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50 text-xs">
+          <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-700 font-semibold flex justify-between items-center">
+            <span>Notifications (3 New)</span>
+            <button onclick="clearNotifications()" class="text-[11px] text-msBlue hover:underline">Mark all read</button>
+          </div>
+          <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700">
+            <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex space-x-2.5">
+              <span class="text-base">💬</span>
+              <div>
+                <p class="font-medium">David Miller mentioned you in <span class="text-msBlue">#engineering</span></p>
+                <p class="text-[10px] text-slate-400">10m ago &bull; "Please review the PR configs"</p>
+              </div>
+            </div>
+            <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex space-x-2.5">
+              <span class="text-base">📅</span>
+              <div>
+                <p class="font-medium">Upcoming Meeting: SRE Sync</p>
+                <p class="text-[10px] text-slate-400">In 20 mins &bull; Teams Conference Room</p>
+              </div>
+            </div>
+            <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 flex space-x-2.5">
+              <span class="text-base">🛡️</span>
+              <div>
+                <p class="font-medium">Security Access Audit Verified</p>
+                <p class="text-[10px] text-slate-400">1h ago &bull; Microsoft Entra ID Token Refresh</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Shortcuts -->
+      <button onclick="toggleHelpModal()" class="p-1.5 hover:bg-white/10 rounded transition" title="Shortcuts (Ctrl+/)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </button>
+
+      <!-- Settings -->
+      <button onclick="switchView('settings')" class="p-1.5 hover:bg-white/10 rounded transition" title="Settings">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </button>
+
+      <!-- User Avatar with Presence Dot -->
+      <div class="relative">
+        <button onclick="toggleProfileMenu()" class="flex items-center space-x-1.5 pl-2 hover:opacity-90">
+          <div class="relative">
+            <div id="topAvatar" class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs">
+              SJ
+            </div>
+            <span id="presenceDot" class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 border-2 border-white rounded-full"></span>
+          </div>
+        </button>
+
+        <!-- Profile / Presence Dropdown -->
+        <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-3 z-50 text-xs">
+          <div class="flex items-center space-x-3 pb-3 border-b border-slate-100 dark:border-slate-700">
+            <div id="menuAvatar" class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm">
+              SJ
+            </div>
+            <div class="leading-tight truncate">
+              <p id="menuUserName" class="font-bold text-slate-900 dark:text-white truncate">Sarah Jenkins</p>
+              <p id="menuUserEmail" class="text-[11px] text-slate-500 dark:text-slate-400 truncate">sarah.jenkins@acme-defense.internal</p>
+              <span id="menuUserRole" class="inline-block mt-0.5 text-[10px] bg-blue-50 dark:bg-blue-900/40 text-msBlue dark:text-blue-300 px-1.5 py-0.5 rounded font-medium">Principal Cloud Architect</span>
+            </div>
+          </div>
+
+          <div class="py-2 space-y-1">
+            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider px-1">Set Presence Status</div>
+            <button onclick="setPresence('Available', 'bg-emerald-400')" class="w-full flex items-center space-x-2 px-2 py-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span>Available</span>
+            </button>
+            <button onclick="setPresence('Busy', 'bg-red-500')" class="w-full flex items-center space-x-2 px-2 py-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+              <span>Busy / In a Call</span>
+            </button>
+            <button onclick="setPresence('Away', 'bg-amber-400')" class="w-full flex items-center space-x-2 px-2 py-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span>Away</span>
+            </button>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+            <a href="http://localhost:5000" target="_blank" class="text-msBlue hover:underline font-medium">SOC Monitor (Port 5000)</a>
+            <a href="/login" class="text-red-500 hover:underline">Sign out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. TEAMS NARROW APP RAIL + CONTEXTUAL SIDEBAR + MAIN WORKSPACE -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- TEAMS APP RAIL (Narrow Teams Navigation, ~64px) -->
+    <nav class="w-16 bg-[#2B2B30] text-slate-300 flex flex-col items-center py-3 space-y-1 shrink-0 z-20">
+      <button onclick="switchView('home')" id="rail-home" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 transition text-white bg-white/10" title="Home Dashboard">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="text-[10px] font-medium leading-none">Home</span>
+      </button>
+
+      <button onclick="switchView('chat')" id="rail-chat" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition relative" title="Teams Chat">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        <span class="text-[10px] font-medium leading-none">Chat</span>
+        <span class="absolute top-1 right-2 w-2 h-2 bg-msBlue rounded-full"></span>
+      </button>
+
+      <button onclick="switchView('teams')" id="rail-teams" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="Teams & Channels">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <span class="text-[10px] font-medium leading-none">Teams</span>
+      </button>
+
+      <button onclick="switchView('calendar')" id="rail-calendar" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="Calendar & Meetings">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span class="text-[10px] font-medium leading-none">Calendar</span>
+      </button>
+
+      <button onclick="switchView('files')" id="rail-files" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="SharePoint / OneDrive Files">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        <span class="text-[10px] font-medium leading-none">Files</span>
+      </button>
+
+      <button onclick="switchView('tasks')" id="rail-tasks" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="Kanban Tasks (Planner)">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span class="text-[10px] font-medium leading-none">Tasks</span>
+      </button>
+
+      <button onclick="switchView('directory')" id="rail-directory" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="50 Employee Directory">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+        <span class="text-[10px] font-medium leading-none">Directory</span>
+      </button>
+
+      <button onclick="switchView('helpdesk')" id="rail-helpdesk" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="IT Helpdesk Tickets">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <span class="text-[10px] font-medium leading-none">Helpdesk</span>
+      </button>
+
+      <button onclick="switchView('analytics')" id="rail-analytics" class="w-12 h-12 rounded-lg flex flex-col items-center justify-center space-y-1 hover:bg-white/10 transition" title="Analytics & KPI Metrics">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span class="text-[10px] font-medium leading-none">Analytics</span>
+      </button>
+    </nav>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="flex-1 flex overflow-hidden bg-[#F8F9FA] dark:bg-[#11100F]">
+
+      <!-- ================================================================= -->
+      <!-- VIEW 1: HOME DASHBOARD (Default) -->
+      <!-- ================================================================= -->
+      <section id="view-home" class="flex-1 overflow-y-auto p-6 space-y-6">
+        <!-- Personalized Greeting Card -->
+        <div class="bg-gradient-to-r from-msBlue to-[#106EBE] text-white rounded-xl p-6 shadow-md flex justify-between items-center flex-wrap gap-4">
+          <div>
+            <h1 id="homeGreeting" class="text-2xl font-bold tracking-tight">Good morning, Sarah Jenkins!</h1>
+            <p id="homeSubtext" class="text-xs text-white/90 mt-1">
+              Engineering &amp; Cloud Infrastructure Department &bull; Connected to NexaTech Solutions Microsoft 365 E5
+            </p>
+            <div class="flex items-center space-x-3 mt-3 text-xs font-medium">
+              <span class="bg-white/20 px-2.5 py-1 rounded-md backdrop-blur-xs flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                <span>SSO Session Active</span>
+              </span>
+              <span class="bg-white/10 px-2.5 py-1 rounded-md">IP Assigned: 172.100.2.71</span>
+            </div>
+          </div>
+
+          <div class="flex space-x-2">
+            <button onclick="switchView('files')" class="bg-white text-msBlue hover:bg-slate-100 font-semibold px-4 py-2 rounded-md text-xs transition shadow-sm">
+              📁 Browse Cloud Files
+            </button>
+            <button onclick="openJoinMeetingModal('Engineering Sprint Sync')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded-md text-xs transition shadow-sm flex items-center space-x-1.5">
+              <span>📹 Join Meeting</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Scorecard Strip -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <p class="text-slate-400 font-medium uppercase text-[10px]">Cloud Infrastructure</p>
+            <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">99.98%</p>
+            <span class="text-emerald-500 text-[10px] font-semibold">&bull; All 14 AWS/Azure clusters healthy</span>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <p class="text-slate-400 font-medium uppercase text-[10px]">Pending Tasks</p>
+            <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">4 Assigned</p>
+            <span class="text-msBlue text-[10px] font-semibold">&bull; 2 High Priority</span>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <p class="text-slate-400 font-medium uppercase text-[10px]">Company Directory</p>
+            <p class="text-xl font-bold text-slate-800 dark:text-white mt-1">50 Employees</p>
+            <span class="text-purple-500 text-[10px] font-semibold">&bull; All accounts active in MongoDB</span>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <p class="text-slate-400 font-medium uppercase text-[10px]">SOC Telemetry</p>
+            <p class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">Port 5000 Live</p>
+            <span class="text-slate-500 text-[10px]">&bull; Tripwire deception armed</span>
+          </div>
+        </div>
+
+        <!-- 2 Columns: Announcements + Quick Tasks & Files -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left 2 Cols: Department Files & Tasks -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Files Widget -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-sm text-slate-800 dark:text-white flex items-center space-x-1.5">
+                  <span>📁 Confidential Corporate Documents</span>
+                </h3>
+                <button onclick="switchView('files')" class="text-xs text-msBlue hover:underline">View All &rarr;</button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="homeFilesGrid">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Tasks Widget -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-sm text-slate-800 dark:text-white">📋 My Priority Tasks</h3>
+                <button onclick="switchView('tasks')" class="text-xs text-msBlue hover:underline">Open Planner &rarr;</button>
+              </div>
+
+              <div class="space-y-2 text-xs" id="homeTasksList">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 1 Col: Announcements & Upcoming Meetings -->
+          <div class="space-y-6">
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+              <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3">📢 Corporate Announcements</h3>
+              <div class="space-y-3 text-xs">
+                <div class="p-3 bg-blue-50 dark:bg-slate-700/40 rounded-lg border border-blue-100 dark:border-slate-600">
+                  <p class="font-bold text-msBlue">NexaTech Global All-Hands</p>
+                  <p class="text-slate-600 dark:text-slate-300 mt-1">Friday at 3:00 PM EST &bull; Review of Q4 Milestones and Cloud Expansion.</p>
+                </div>
+                <div class="p-3 bg-slate-50 dark:bg-slate-700/40 rounded-lg border border-slate-200 dark:border-slate-600">
+                  <p class="font-bold text-slate-800 dark:text-slate-200">Zero-Trust Entra ID Compliance</p>
+                  <p class="text-slate-600 dark:text-slate-300 mt-1">All employee workstations must complete 2FA hardware key attestation.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+              <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3">📅 Upcoming Today</h3>
+              <div class="space-y-2.5 text-xs">
+                <div class="flex justify-between items-center p-2 rounded hover:bg-slate-50 dark:hover:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+                  <div>
+                    <p class="font-bold">SRE &amp; Cloud Sync</p>
+                    <p class="text-[10px] text-slate-400">11:00 AM &bull; 45 mins</p>
+                  </div>
+                  <button onclick="openJoinMeetingModal('SRE & Cloud Sync')" class="bg-msBlue text-white text-[11px] px-2.5 py-1 rounded font-semibold hover:bg-msBlueHover">Join</button>
+                </div>
+                <div class="flex justify-between items-center p-2 rounded hover:bg-slate-50 dark:hover:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+                  <div>
+                    <p class="font-bold">Architecture Review</p>
+                    <p class="text-[10px] text-slate-400">2:30 PM &bull; 30 mins</p>
+                  </div>
+                  <button onclick="openJoinMeetingModal('Architecture Review')" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-[11px] px-2.5 py-1 rounded font-semibold">Ready</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 2: TEAMS CHAT VIEW (Simulated Incoming Messages Every 20-30s) -->
+      <!-- ================================================================= -->
+      <section id="view-chat" class="hidden flex-1 flex overflow-hidden">
+        <!-- Chat Threads List Column -->
+        <div class="w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col shrink-0">
+          <div class="p-3 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+            <span class="font-bold text-sm text-slate-800 dark:text-white">Chat</span>
+            <button onclick="alert('New chat initiated with colleague.');" class="text-msBlue hover:bg-blue-50 dark:hover:bg-slate-700 p-1 rounded">✏️</button>
+          </div>
+          <div class="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700" id="chatThreadsList">
+            <!-- Threads inserted dynamically -->
+          </div>
+        </div>
+
+        <!-- Active Chat Window -->
+        <div class="flex-1 flex flex-col bg-[#F3F2F1] dark:bg-[#1B1A19]">
+          <!-- Active Contact Header -->
+          <div class="h-12 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span id="activeChatName" class="font-bold text-xs text-slate-800 dark:text-white">David Miller (DevOps Lead)</span>
+              <span class="text-[11px] text-slate-400">&bull; Available</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="openJoinMeetingModal('1:1 Video Call with ' + document.getElementById('activeChatName').innerText)" class="p-1 text-slate-600 dark:text-slate-300 hover:text-msBlue text-xs" title="Video Call">📹 Video</button>
+              <button onclick="openJoinMeetingModal('Audio Call with ' + document.getElementById('activeChatName').innerText)" class="p-1 text-slate-600 dark:text-slate-300 hover:text-msBlue text-xs" title="Audio Call">📞 Call</button>
+            </div>
+          </div>
+
+          <!-- Message History Stream -->
+          <div class="flex-1 overflow-y-auto p-4 space-y-3" id="chatMessagesStream">
+            <!-- Messages populated dynamically -->
+          </div>
+
+          <!-- Message Composer Input -->
+          <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
+            <form onsubmit="sendChatMessage(event)" class="flex space-x-2">
+              <input
+                type="text"
+                id="chatInput"
+                placeholder="Type a message to team (use @mention or emoji)..."
+                class="flex-1 px-3 py-2 text-xs border border-slate-300 dark:border-slate-600 rounded bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white outline-none focus:border-msBlue"
+              />
+              <button type="submit" class="bg-msBlue hover:bg-msBlueHover text-white px-4 py-2 rounded text-xs font-semibold">
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 3: TEAMS & CHANNELS -->
+      <!-- ================================================================= -->
+      <section id="view-teams" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white">Teams &amp; Channels</h2>
+            <p class="text-xs text-slate-500">Collaborative workspaces across engineering, infrastructure, and operations.</p>
+          </div>
+          <button onclick="alert('Channel created.');" class="bg-msBlue text-white text-xs px-3 py-1.5 rounded font-semibold hover:bg-msBlueHover">
+            + Create Channel
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <div class="flex items-center space-x-3 mb-3">
+              <div class="w-10 h-10 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm">ENG</div>
+              <div>
+                <h4 class="font-bold text-sm">Cloud Infrastructure &amp; DevOps</h4>
+                <p class="text-[11px] text-slate-500">24 Members &bull; 8 Channels</p>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 font-mono">
+              <div class="p-1.5 bg-slate-50 dark:bg-slate-700/50 rounded flex justify-between"><span># general</span><span class="text-slate-400">Active</span></div>
+              <div class="p-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/30 flex justify-between"><span># k8s-production-deploy</span><span class="text-msBlue">1 New</span></div>
+              <div class="p-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/30 flex justify-between"><span># terraform-security-audit</span><span>Verified</span></div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <div class="flex items-center space-x-3 mb-3">
+              <div class="w-10 h-10 rounded-lg bg-purple-600 text-white font-bold flex items-center justify-center text-sm">SOC</div>
+              <div>
+                <h4 class="font-bold text-sm">Cyber Security Operations (SOC)</h4>
+                <p class="text-[11px] text-slate-500">12 Members &bull; 4 Channels</p>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 font-mono">
+              <div class="p-1.5 bg-slate-50 dark:bg-slate-700/50 rounded flex justify-between"><span># honeypot-deception-telemetry</span><span class="text-red-500 font-bold">Armed</span></div>
+              <div class="p-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/30 flex justify-between"><span># zero-trust-entra-id</span><span class="text-slate-400">Normal</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 4: CALENDAR & VIDEO MEETINGS -->
+      <!-- ================================================================= -->
+      <section id="view-calendar" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white">Corporate Calendar</h2>
+            <p class="text-xs text-slate-500">Syncs with Microsoft Exchange Online and Teams Meetings.</p>
+          </div>
+          <button onclick="openJoinMeetingModal('New Ad-hoc Meeting')" class="bg-msBlue text-white text-xs px-3.5 py-1.5 rounded font-semibold hover:bg-msBlueHover">
+            + New Meeting
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+          <div class="space-y-3">
+            <div class="p-4 border-l-4 border-msBlue bg-blue-50/50 dark:bg-slate-700/30 rounded-r-lg flex justify-between items-center">
+              <div>
+                <span class="text-[10px] font-mono text-msBlue font-bold uppercase">10:00 AM - 11:00 AM &bull; TODAY</span>
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">Weekly Cloud Architecture Review</h4>
+                <p class="text-xs text-slate-500">Attendees: Sarah Jenkins, David Miller, Alex Mercer</p>
+              </div>
+              <button onclick="openJoinMeetingModal('Weekly Cloud Architecture Review')" class="bg-msBlue text-white text-xs font-semibold px-4 py-1.5 rounded hover:bg-msBlueHover shadow-xs">
+                📹 Join Video Call
+              </button>
+            </div>
+
+            <div class="p-4 border-l-4 border-emerald-500 bg-emerald-50/50 dark:bg-slate-700/30 rounded-r-lg flex justify-between items-center">
+              <div>
+                <span class="text-[10px] font-mono text-emerald-600 font-bold uppercase">2:00 PM - 2:30 PM &bull; TODAY</span>
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">SRE Post-Mortem &amp; Uptime Assessment</h4>
+                <p class="text-xs text-slate-500">Attendees: Engineering Team Leads</p>
+              </div>
+              <button onclick="openJoinMeetingModal('SRE Post-Mortem')" class="bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold px-4 py-1.5 rounded hover:bg-slate-300">
+                Join at 2:00 PM
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 5: SHAREPOINT / ONEDRIVE CONFIDENTIAL FILES (Canary Trap Triggers) -->
+      <!-- ================================================================= -->
+      <section id="view-files" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white">SharePoint &bull; Enterprise Cloud Drive</h2>
+            <p class="text-xs text-slate-500">Privileged document library. Access is tied to your Microsoft 365 E5 security token.</p>
+          </div>
+          <button onclick="alert('File uploaded to SharePoint folder.');" class="bg-msBlue text-white text-xs px-3.5 py-1.5 rounded font-semibold hover:bg-msBlueHover">
+            + Upload Document
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-700 text-slate-400 font-semibold uppercase text-[10px]">
+                  <th class="py-2.5 px-3">Document Name</th>
+                  <th class="py-2.5 px-3">Clearance</th>
+                  <th class="py-2.5 px-3">File Size</th>
+                  <th class="py-2.5 px-3">Modified</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="sharepointFilesTable">
+                <!-- Dynamically populated with sensitive canary files -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 6: PROJECTS & KANBAN TASKS -->
+      <!-- ================================================================= -->
+      <section id="view-tasks" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white">Projects &amp; Tasks (Kanban Planner)</h2>
+            <p class="text-xs text-slate-500">Sprint 48: Multi-Cloud Infrastructure &amp; Zero-Trust Hardening.</p>
+          </div>
+          <button onclick="alert('Task created on board.');" class="bg-msBlue text-white text-xs px-3.5 py-1.5 rounded font-semibold hover:bg-msBlueHover">
+            + Add Task
+          </button>
+        </div>
+
+        <!-- 4-Column Kanban Board -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <!-- TO DO -->
+          <div class="bg-slate-100 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-3 font-bold text-slate-700 dark:text-slate-300">
+              <span>TO DO (3)</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-2xs border border-slate-200 dark:border-slate-600">
+                <span class="text-[9px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">CRITICAL</span>
+                <p class="font-semibold text-slate-800 dark:text-white mt-1">Audit ingress firewall rulebase</p>
+                <p class="text-[10px] text-slate-400 mt-1">Due: Tomorrow &bull; Assignee: Alex Mercer</p>
+              </div>
+              <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-2xs border border-slate-200 dark:border-slate-600">
+                <span class="text-[9px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">MEDIUM</span>
+                <p class="font-semibold text-slate-800 dark:text-white mt-1">Update TLS certs on reverse proxy</p>
+                <p class="text-[10px] text-slate-400 mt-1">Due: Friday &bull; Assignee: David Miller</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- IN PROGRESS -->
+          <div class="bg-slate-100 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-3 font-bold text-msBlue">
+              <span>IN PROGRESS (2)</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-2xs border border-blue-200 dark:border-blue-900">
+                <span class="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">HIGH PRIORITY</span>
+                <p class="font-semibold text-slate-800 dark:text-white mt-1">Deploy Kubernetes v1.29 to cluster</p>
+                <p class="text-[10px] text-slate-400 mt-1">Due: Today &bull; Assignee: Sarah Jenkins</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- REVIEW -->
+          <div class="bg-slate-100 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-3 font-bold text-purple-600">
+              <span>REVIEW (2)</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-2xs border border-slate-200 dark:border-slate-600">
+                <span class="text-[9px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">PEER REVIEW</span>
+                <p class="font-semibold text-slate-800 dark:text-white mt-1">Terraform VPC peering PR #412</p>
+                <p class="text-[10px] text-slate-400 mt-1">Reviewer: SRE Team</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- DONE -->
+          <div class="bg-slate-100 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-3 font-bold text-emerald-600">
+              <span>DONE (8)</span>
+            </div>
+            <div class="space-y-2.5">
+              <div class="bg-white dark:bg-slate-700 p-3 rounded-lg shadow-2xs border border-emerald-200 dark:border-emerald-900">
+                <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">VERIFIED</span>
+                <p class="font-semibold text-slate-800 dark:text-white mt-1">Cold storage backup verification</p>
+                <p class="text-[10px] text-slate-400 mt-1">Completed by automated cron</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 7: 50 EMPLOYEE DIRECTORY -->
+      <!-- ================================================================= -->
+      <section id="view-directory" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="flex justify-between items-center flex-wrap gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white">NexaTech Corporate Directory (50 Staff)</h2>
+            <p class="text-xs text-slate-500">Live employee registry connected to MongoDB database collection <code>decoyusers</code>.</p>
+          </div>
+
+          <input
+            type="text"
+            id="dirSearch"
+            placeholder="Search by name, role, or department..."
+            onkeyup="filterStaffDirectory()"
+            class="px-3 py-1.5 text-xs border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-800 w-64 outline-none focus:border-msBlue"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="staffDirectoryGrid">
+          <!-- Populated from MongoDB /api/employees -->
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 8: IT HELPDESK TICKETS -->
+      <!-- ================================================================= -->
+      <section id="view-helpdesk" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 dark:text-white">IT Service Desk &bull; Support Portal</h2>
+            <p class="text-xs text-slate-500">Submit requests for hardware provisioning, access controls, and software licenses.</p>
+          </div>
+          <button onclick="alert('Ticket submitted to IT Queue.');" class="bg-msBlue text-white text-xs px-3.5 py-1.5 rounded font-semibold hover:bg-msBlueHover">
+            + Raise Ticket
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-2xs">
+          <div class="space-y-3 text-xs">
+            <div class="p-3 border border-slate-200 dark:border-slate-700 rounded-lg flex justify-between items-center">
+              <div>
+                <span class="text-[10px] font-mono text-msBlue font-bold">#TICK-8841 &bull; HARDWARE ACCESS</span>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-white">YubiKey 5C NFC Security Key Replacement</h4>
+                <p class="text-slate-500 text-[11px]">Assigned to: IT Support Tier 2 &bull; Status: In Progress</p>
+              </div>
+              <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">IN PROGRESS</span>
+            </div>
+
+            <div class="p-3 border border-slate-200 dark:border-slate-700 rounded-lg flex justify-between items-center">
+              <div>
+                <span class="text-[10px] font-mono text-emerald-600 font-bold">#TICK-8820 &bull; SOFTWARE LICENSE</span>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Datadog APM Enterprise Seat License</h4>
+                <p class="text-slate-500 text-[11px]">Approved by Engineering Director &bull; Status: Closed</p>
+              </div>
+              <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">RESOLVED</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 9: ANALYTICS & KPIS -->
+      <!-- ================================================================= -->
+      <section id="view-analytics" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800 dark:text-white">Enterprise Cloud Analytics</h2>
+          <p class="text-xs text-slate-500">Real-time performance metrics and infrastructure latency.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <h4 class="font-bold text-sm mb-3">Sprint Task Velocity (Story Points)</h4>
+            <canvas id="sprintChart" height="180"></canvas>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <h4 class="font-bold text-sm mb-3">Service Uptime &amp; Latency</h4>
+            <div class="space-y-3 text-xs pt-4">
+              <div>
+                <div class="flex justify-between mb-1 font-semibold"><span>US-East Kubernetes Cluster</span><span>99.99%</span></div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-2 w-[99%]"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1 font-semibold"><span>EU-Central Database Shards</span><span>99.95%</span></div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-msBlue h-2 w-[98%]"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1 font-semibold"><span>Corporate SSO Gateway</span><span>100%</span></div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-purple-500 h-2 w-[100%]"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 10: SETTINGS -->
+      <!-- ================================================================= -->
+      <section id="view-settings" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800 dark:text-white">Workspace Preferences &bull; Settings</h2>
+          <p class="text-xs text-slate-500">Configure visual themes, identity tokens, and connected services.</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-5 shadow-2xs max-w-xl text-xs">
+          <div>
+            <label class="font-bold block mb-1">Color Theme</label>
+            <div class="flex space-x-3">
+              <button onclick="toggleDarkMode(false)" class="px-4 py-2 border rounded font-semibold bg-white text-slate-900 border-slate-300">☀️ Light Fluent</button>
+              <button onclick="toggleDarkMode(true)" class="px-4 py-2 border rounded font-semibold bg-slate-900 text-white border-slate-700">🌙 Dark Mode</button>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+            <label class="font-bold block mb-1">Connected Cyber Deception Honeypot Core</label>
+            <p class="text-slate-500 mb-2">Telemetry bridge forwards intrusion packets to Port 5000 in real time.</p>
+            <a href="http://localhost:5000" target="_blank" class="inline-block bg-msBlue text-white font-semibold px-4 py-2 rounded">Open Defender Dashboard (Port 5000)</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. INTERACTIVE VIDEO CALL SIMULATOR MODAL (Teams-Like Meeting) -->
+  <!-- ========================================================================= -->
+  <div id="videoModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-[#201F1E] text-white w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-white/10">
+      <!-- Meeting Header -->
+      <div class="p-4 bg-[#292827] flex justify-between items-center border-b border-white/10">
+        <div class="flex items-center space-x-2">
+          <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+          <span id="meetingTitle" class="font-bold text-sm">Teams Video Conference</span>
+          <span class="text-xs text-slate-400 font-mono">00:14:32</span>
+        </div>
+        <button onclick="closeVideoMeeting()" class="text-slate-400 hover:text-white text-xs bg-white/10 px-3 py-1.5 rounded">Exit View</button>
+      </div>
+
+      <!-- 4-Participant Video Grid -->
+      <div class="grid grid-cols-2 gap-3 p-4 bg-[#1B1A19] h-96">
+        <div class="bg-slate-800 rounded-xl flex flex-col items-center justify-center relative border border-white/5">
+          <div class="w-16 h-16 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xl">SJ</div>
+          <span class="absolute bottom-3 left-3 bg-black/60 px-2 py-0.5 rounded text-[11px]">Sarah Jenkins (You)</span>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl flex flex-col items-center justify-center relative border border-white/5">
+          <div class="w-16 h-16 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xl">DM</div>
+          <span class="absolute bottom-3 left-3 bg-black/60 px-2 py-0.5 rounded text-[11px]">David Miller (DevOps Lead)</span>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl flex flex-col items-center justify-center relative border border-white/5">
+          <div class="w-16 h-16 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-xl">AM</div>
+          <span class="absolute bottom-3 left-3 bg-black/60 px-2 py-0.5 rounded text-[11px]">Alex Mercer (SecOps)</span>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl flex flex-col items-center justify-center relative border border-white/5">
+          <div class="w-16 h-16 rounded-full bg-amber-600 text-white font-bold flex items-center justify-center text-xl">EZ</div>
+          <span class="absolute bottom-3 left-3 bg-black/60 px-2 py-0.5 rounded text-[11px]">Emily Zhang (Lead AI)</span>
+        </div>
+      </div>
+
+      <!-- Bottom Meeting Controls -->
+      <div class="p-3 bg-[#292827] flex justify-center items-center space-x-3">
+        <button id="btnMic" onclick="toggleMic()" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-full text-sm">🎤 Mic On</button>
+        <button id="btnCam" onclick="toggleCam()" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-full text-sm">📹 Cam On</button>
+        <button onclick="alert('Screen sharing activated.');" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-full text-sm">🖥️ Share Screen</button>
+        <button onclick="alert('Hand raised.');" class="bg-white/10 hover:bg-white/20 p-2.5 rounded-full text-sm">✋ Raise Hand</button>
+        <button onclick="closeVideoMeeting()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2 rounded-full text-xs">Leave Meeting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. COMMAND PALETTE (Ctrl+K) & KEYBOARD SHORTCUTS (Ctrl+/) -->
+  <!-- ========================================================================= -->
+  <div id="commandPaletteModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-start justify-center pt-24 p-4">
+    <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white w-full max-w-lg rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden text-xs">
+      <div class="p-3 border-b border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="paletteSearch" placeholder="Type a command or search..." class="flex-1 outline-none bg-transparent" />
+        <span class="text-[10px] text-slate-400">ESC to close</span>
+      </div>
+      <div class="p-2 space-y-1">
+        <button onclick="switchView('files'); closeCommandPalette();" class="w-full text-left p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex justify-between">
+          <span>📁 Browse Confidential Cloud Files</span>
+          <span class="text-slate-400">Jump</span>
+        </button>
+        <button onclick="switchView('tasks'); closeCommandPalette();" class="w-full text-left p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex justify-between">
+          <span>📋 Open Kanban Sprint Planner</span>
+          <span class="text-slate-400">Jump</span>
+        </button>
+        <button onclick="switchView('directory'); closeCommandPalette();" class="w-full text-left p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex justify-between">
+          <span>📇 Search 50 Corporate Employees</span>
+          <span class="text-slate-400">Jump</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    let employees = [];
+    let currentEmployee = null;
+
+    // Simulated chat messages
+    let chatMessages = [
+      { sender: 'David Miller', text: 'Hey Sarah, are the Kubernetes ingress rules deployed to the staging cluster?', time: '10:14 AM' },
+      { sender: 'You', text: 'Yes, just pushed PR #412 with Terraform VPC peering.', time: '10:16 AM' },
+      { sender: 'David Miller', text: 'Awesome! Uptime is solid at 99.98%.', time: '10:18 AM' }
+    ];
+
+    // Simulated incoming message timer (every 22 seconds to make the portal feel completely alive)
+    setInterval(() => {
+      const simulatedSenders = ['David Miller', 'Alex Mercer', 'Emily Zhang', 'Michael Ross'];
+      const simulatedTexts = [
+        'Just reviewed the cloud security audit report. Looks great!',
+        'Are we still on for the SRE sync call at 11:00 AM?',
+        'Uploaded the new benchmark specs to SharePoint Cloud Drive.',
+        'Production clusters are operating with zero packet loss.'
+      ];
+      const randomSender = simulatedSenders[Math.floor(Math.random() * simulatedSenders.length)];
+      const randomText = simulatedTexts[Math.floor(Math.random() * simulatedTexts.length)];
+
+      chatMessages.push({
+        sender: randomSender,
+        text: randomText,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      renderChatMessages();
+    }, 22000);
+
+    // Document templates for canary exfiltration
+    const CANARY_FILES = [
+      { name: 'Kubernetes_Production_Cluster_Configs.yaml', clearance: 'RESTRICTED', size: '2.4 MB', date: 'Today' },
+      { name: 'Cloud_Infrastructure_AWS_Secrets.env', clearance: 'TOP SECRET', size: '14 KB', date: 'Yesterday' },
+      { name: 'Q4_Executive_Compensation_Plan.pdf', clearance: 'CONFIDENTIAL', size: '3.1 MB', date: '2 days ago' },
+      { name: 'Corporate_Payroll_Master_2026.xlsx', clearance: 'FINANCE ONLY', size: '5.2 MB', date: 'Last week' },
+      { name: 'Client_Contracts_Master_Confidential.docx', clearance: 'LEGAL', size: '8.7 MB', date: 'Oct 28' }
+    ];
+
+    async function initNexaTechPortal() {
+      try {
+        const res = await fetch('/api/employees');
+        employees = await res.json();
+      } catch (e) {
+        employees = [];
+      }
+
+      // Extract user from URL query or default to Sarah Jenkins
+      const params = new URLSearchParams(window.location.search);
+      const queryUser = params.get('user') || 'Sarah Jenkins';
+
+      currentEmployee = employees.find(e =>
+        e.name.toLowerCase().includes(queryUser.toLowerCase()) ||
+        e.email.toLowerCase().includes(queryUser.toLowerCase()) ||
+        e.username.toLowerCase().includes(queryUser.toLowerCase())
+      );
+
+      if (!currentEmployee) {
+        currentEmployee = {
+          empId: 'EMP-1001',
+          name: queryUser,
+          email: 'sarah.jenkins@acme-defense.internal',
+          googleAccount: 's.jenkins.acme@gmail.com',
+          role: 'Principal Cloud Architect',
+          department: 'Engineering',
+          accessLevel: 'SUPERADMIN'
+        };
+      }
+
+      // Populate user info everywhere
+      const initials = currentEmployee.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      document.getElementById('topAvatar').innerText = initials;
+      document.getElementById('menuAvatar').innerText = initials;
+      document.getElementById('menuUserName').innerText = currentEmployee.name;
+      document.getElementById('menuUserEmail').innerText = currentEmployee.email;
+      document.getElementById('menuUserRole').innerText = currentEmployee.role;
+      document.getElementById('homeGreeting').innerText = `Good morning, ${currentEmployee.name}!`;
+      document.getElementById('homeSubtext').innerText = `${currentEmployee.department} \u2022 NexaTech Solutions Microsoft 365 E5 Active`;
+
+      renderHomeFiles();
+      renderHomeTasks();
+      renderChatThreads();
+      renderChatMessages();
+      renderSharepointTable();
+      renderDirectoryGrid(employees);
+      initSprintChart();
+    }
+
+    function renderHomeFiles() {
+      const box = document.getElementById('homeFilesGrid');
+      box.innerHTML = CANARY_FILES.slice(0, 4).map(f => `
+        <div onclick="downloadCanaryDoc('${f.name}')" class="p-3 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-msBlue cursor-pointer transition flex items-center space-x-3 bg-slate-50/50 dark:bg-slate-700/30">
+          <span class="text-xl">📄</span>
+          <div class="truncate">
+            <p class="font-bold text-slate-800 dark:text-white truncate">${f.name}</p>
+            <p class="text-[10px] text-slate-400">${f.size} &bull; ${f.clearance}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderHomeTasks() {
+      const box = document.getElementById('homeTasksList');
+      box.innerHTML = `
+        <div class="p-2.5 bg-slate-50 dark:bg-slate-700/30 rounded border border-slate-100 dark:border-slate-700 flex justify-between items-center">
+          <div><p class="font-bold">Review PR #412: Terraform VPC Peering</p><p class="text-[10px] text-slate-400">Due in 4 hours &bull; Assigned to you</p></div>
+          <span class="text-msBlue font-semibold">In Progress</span>
+        </div>
+        <div class="p-2.5 bg-slate-50 dark:bg-slate-700/30 rounded border border-slate-100 dark:border-slate-700 flex justify-between items-center">
+          <div><p class="font-bold">Rotate Ingress SSL Certificates</p><p class="text-[10px] text-slate-400">Due Friday &bull; Cloud Infrastructure</p></div>
+          <span class="text-amber-500 font-semibold">Pending</span>
+        </div>
+      `;
+    }
+
+    function renderChatThreads() {
+      const box = document.getElementById('chatThreadsList');
+      const threads = [
+        { name: 'David Miller (DevOps)', preview: 'Awesome! Uptime is solid at 99.98%.', time: '10:18 AM' },
+        { name: 'Alex Mercer (SOC)', preview: 'Perimeter firewall audit complete.', time: '09:40 AM' },
+        { name: '#engineering-general', preview: 'Sarah Jenkins: Pushed update to staging.', time: '08:55 AM' },
+        { name: 'Emily Zhang (AI)', preview: 'Neural weights exported to storage.', time: 'Yesterday' }
+      ];
+      box.innerHTML = threads.map((t, idx) => `
+        <div onclick="selectThread('${t.name}')" class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition ${idx === 0 ? 'bg-blue-50/50 dark:bg-slate-700/60' : ''}">
+          <div class="flex justify-between items-baseline mb-0.5">
+            <span class="font-bold text-xs truncate text-slate-800 dark:text-white">${t.name}</span>
+            <span class="text-[10px] text-slate-400">${t.time}</span>
+          </div>
+          <p class="text-[11px] text-slate-500 truncate">${t.preview}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderChatMessages() {
+      const box = document.getElementById('chatMessagesStream');
+      box.innerHTML = chatMessages.map(m => `
+        <div class="flex flex-col ${m.sender === 'You' ? 'items-end' : 'items-start'}">
+          <div class="flex items-center space-x-1.5 text-[10px] text-slate-400 mb-0.5">
+            <span class="font-bold text-slate-600 dark:text-slate-300">${m.sender}</span>
+            <span>&bull; ${m.time}</span>
+          </div>
+          <div class="px-3.5 py-2 rounded-xl text-xs max-w-md ${m.sender === 'You' ? 'bg-msBlue text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-tl-none shadow-2xs'}">
+            ${m.text}
+          </div>
+        </div>
+      `).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const val = input.value.trim();
+      if (!val) return;
+      chatMessages.push({
+        sender: 'You',
+        text: val,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      input.value = '';
+      renderChatMessages();
+    }
+
+    function selectThread(name) {
+      document.getElementById('activeChatName').innerText = name;
+    }
+
+    function renderSharepointTable() {
+      const tbody = document.getElementById('sharepointFilesTable');
+      tbody.innerHTML = CANARY_FILES.map(f => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+          <td class="py-3 px-3 font-semibold text-slate-800 dark:text-white flex items-center space-x-2">
+            <span>📄</span>
+            <span>${f.name}</span>
+          </td>
+          <td class="py-3 px-3"><span class="bg-blue-50 text-msBlue dark:bg-blue-900/40 dark:text-blue-300 px-2 py-0.5 rounded text-[10px] font-bold">${f.clearance}</span></td>
+          <td class="py-3 px-3 text-slate-500 font-mono text-[11px]">${f.size}</td>
+          <td class="py-3 px-3 text-slate-400">${f.date}</td>
+          <td class="py-3 px-3 text-right">
+            <button onclick="downloadCanaryDoc('${f.name}')" class="text-msBlue font-semibold hover:underline bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded">
+              Download
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderDirectoryGrid(list) {
+      const box = document.getElementById('staffDirectoryGrid');
+      if (!list || list.length === 0) {
+        box.innerHTML = '<div class="col-span-3 text-center text-slate-400 py-8">Loading directory...</div>';
+        return;
+      }
+      box.innerHTML = list.slice(0, 30).map(emp => `
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs flex space-x-3 items-start">
+          <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold flex items-center justify-center text-xs shrink-0">
+            ${emp.name.split(' ').map(n=>n[0]).join('')}
+          </div>
+          <div class="min-w-0 flex-1 text-xs">
+            <p class="font-bold text-slate-900 dark:text-white truncate">${emp.name}</p>
+            <p class="text-slate-500 text-[11px] truncate">${emp.role}</p>
+            <p class="text-msBlue font-mono text-[10px] mt-1 truncate">${emp.email}</p>
+            <span class="inline-block mt-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[9px] font-semibold">${emp.department}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterStaffDirectory() {
+      const q = document.getElementById('dirSearch').value.toLowerCase();
+      const filtered = employees.filter(e =>
+        e.name.toLowerCase().includes(q) ||
+        e.email.toLowerCase().includes(q) ||
+        e.department.toLowerCase().includes(q) ||
+        e.role.toLowerCase().includes(q)
+      );
+      renderDirectoryGrid(filtered);
+    }
+
+    function downloadCanaryDoc(filename) {
+      // Trigger forensic tracking beacon to Netlify & Local SOC
+      try {
+        fetch('/.netlify/functions/breach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: currentEmployee ? currentEmployee.email : 'exfiltrator@darkweb.org',
+            action: 'DOCUMENT_EXFILTRATION_BEACON',
+            filename: filename,
+            userAgent: navigator.userAgent
+          })
+        });
+        fetch(`http://${window.location.hostname}:5000/api/canary/doc-beacon/${encodeURIComponent(filename)}`);
+      } catch (e) {}
+
+      const dummy = `CONFIDENTIAL DOCUMENT: ${filename}\nExfiltrated from NexaTech Solutions Microsoft 365 SharePoint.\nUser: ${currentEmployee ? currentEmployee.name : 'Attacker'}\nTimestamp: ${new Date().toISOString()}\n`;
+      const blob = new Blob([dummy], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      alert(`[+] Exfiltrated: ${filename}\nSaved to local downloads! Document beacon triggered.`);
+    }
+
+    function switchView(viewName) {
+      const views = ['home', 'chat', 'teams', 'calendar', 'files', 'tasks', 'directory', 'helpdesk', 'analytics', 'settings'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.add('hidden');
+        const railBtn = document.getElementById(`rail-${v}`);
+        if (railBtn) {
+          railBtn.classList.remove('bg-white/10', 'text-white');
+        }
+      });
+
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`rail-${viewName}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/10', 'text-white');
+      }
+
+      // Close popups
+      document.getElementById('profileDropdown').classList.add('hidden');
+      document.getElementById('notificationsDropdown').classList.add('hidden');
+    }
+
+    // Modal & Menu helpers
+    function toggleProfileMenu() { document.getElementById('profileDropdown').classList.toggle('hidden'); }
+    function toggleNotifications() { document.getElementById('notificationsDropdown').classList.toggle('hidden'); }
+    function setPresence(status, colorClass) {
+      const dot = document.getElementById('presenceDot');
+      dot.className = `absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 ${colorClass} border-2 border-white rounded-full`;
+      toggleProfileMenu();
+    }
+    function toggleWaffle() { alert('Microsoft 365 App Launcher:\n\n• Outlook\n• OneDrive\n• Teams\n• SharePoint\n• Planner\n• PowerBI'); }
+    function openCommandPalette() { document.getElementById('commandPaletteModal').classList.remove('hidden'); }
+    function closeCommandPalette() { document.getElementById('commandPaletteModal').classList.add('hidden'); }
+
+    // Video Meeting Controls
+    function openJoinMeetingModal(title) {
+      document.getElementById('meetingTitle').innerText = title || 'Teams Video Conference';
+      document.getElementById('videoModal').classList.remove('hidden');
+    }
+    function closeVideoMeeting() { document.getElementById('videoModal').classList.add('hidden'); }
+    function toggleMic() {
+      const btn = document.getElementById('btnMic');
+      btn.innerText = btn.innerText.includes('On') ? '🔇 Muted' : '🎤 Mic On';
+    }
+    function toggleCam() {
+      const btn = document.getElementById('btnCam');
+      btn.innerText = btn.innerText.includes('On') ? '📷 Cam Off' : '📹 Cam On';
+    }
+
+    function toggleDarkMode(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    function initSprintChart() {
+      const ctx = document.getElementById('sprintChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Sprint 44', 'Sprint 45', 'Sprint 46', 'Sprint 47', 'Sprint 48'],
+          datasets: [{
+            label: 'Completed Story Points',
+            data: [42, 48, 55, 60, 68],
+            backgroundColor: '#0078D4',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    // Keyboard shortcuts listener (Ctrl+K and Ctrl+/)
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openCommandPalette();
+      }
+      if (e.key === 'Escape') {
+        closeCommandPalette();
+        closeVideoMeeting();
+      }
+    });
+
+    initNexaTechPortal();
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/employees"
+  to = "/api/employees.json"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/workspace"
+  to = "/workspace.html"
+  status = 200
+
+[[redirects]]
+  from = "/leaked-credentials"
+  to = "/leaked-credentials.txt"
+  status = 200

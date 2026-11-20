@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corporate Access Gateway &bull; SuperAdmin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: #11131c;
+      --border: #232838;
+      --border-focus: #ef4444;
+      --red: #ef4444;
+      --red-subtle: rgba(239, 68, 68, 0.12);
+      --red-border: rgba(239, 68, 68, 0.35);
+      --cyan: #38bdf8;
+      --text: #f1f5f9;
+      --text-muted: #8490a6;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 50% 20%, #151824 0%, var(--bg) 70%);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      line-height: 1.5;
+    }
+    .portal-container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .badge-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .status-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #34d399;
+    }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    .login-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #dc2626, #ef4444, #f59e0b);
+    }
+    .brand-header {
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .brand-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .brand-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .form-group {
+      margin-bottom: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .input-control {
+      width: 100%;
+      background-color: #08090d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #fff;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .input-control:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.85rem;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 150ms ease;
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover {
+      background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+    }
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+
+    /* Result Notification Panel */
+    .result-panel {
+      display: none;
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background-color: var(--red-subtle);
+      border: 1px solid var(--red-border);
+      color: #fca5a5;
+    }
+    .result-title {
+      font-weight: 700;
+      color: #f87171;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.35rem 0;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid rgba(239, 68, 68, 0.15);
+    }
+    .result-label {
+      color: #94a3b8;
+    }
+    .result-val {
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-soc-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      margin-top: 0.85rem;
+      background-color: #0284c7;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.65rem;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: background-color 150ms ease;
+    }
+    .btn-soc-link:hover {
+      background-color: #0369a1;
+    }
+    .footer-note {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+    .footer-note a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    .footer-note a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="portal-container">
+    <div class="badge-bar">
+      <span>GATEWAY // CLUSTER_AUTH_NODE_01</span>
+      <span class="status-live">
+        <span class="pulse-dot"></span>
+        ZERO-TRUST ACTIVE
+      </span>
+    </div>
+
+    <div class="login-card">
+      <div class="brand-header">
+        <span class="brand-sub">FORTRESS ENTERPRISE DEFENSE</span>
+        <h1 class="brand-title">SuperAdmin Access Console</h1>
+        <p class="brand-desc">Restricted administrative gateway. Session authentication requires elevated privileges.</p>
+      </div>
+
+      <form id="adminAuthForm" action="/superadmin/auth" method="POST">
+        <!-- Leaked Third-Party Credentials Dump Selector -->
+        <div style="background:#090b10; border:1px solid #1e2638; border-radius:6px; padding:0.75rem; margin-bottom:1.15rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+            <span style="font-family:var(--font-mono); font-size:0.7rem; color:#f59e0b; font-weight:700;">
+              &#128194; DARKWEB / THIRD-PARTY LEAK DUMP (50 ACCOUNTS)
+            </span>
+            <span style="font-size:0.68rem; color:#64748b; font-family:var(--font-mono);">Click to Load:</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:0.35rem;">
+            <button type="button" onclick="fillCredential('sjenkins', 'P@ssw0rd!2026_Root')" style="background:#131722; border:1px solid #232c3f; color:#38bdf8; padding:0.35rem 0.5rem; border-radius:4px; font-family:var(--font-mono); font-size:0.7rem; text-align:left; cursor:pointer;">
+              &bull; Sarah Jenkins (Cloud Architect) &bull; sjenkins : P@ssw0rd!2026_Root
+            </button>
+            <button type="button" onclick="fillCredential('dmiller', 'Miller#Core99$')" style="background:#131722; border:1px solid #232c3f; color:#38bdf8; padding:0.35rem 0.5rem; border-radius:4px; font-family:var(--font-mono); font-size:0.7rem; text-align:left; cursor:pointer;">
+              &bull; David Miller (DevOps Lead) &bull; dmiller : Miller#Core99$
+            </button>
+            <button type="button" onclick="fillCredential('amercer', 'Mercer_Zero!77')" style="background:#131722; border:1px solid #232c3f; color:#38bdf8; padding:0.35rem 0.5rem; border-radius:4px; font-family:var(--font-mono); font-size:0.7rem; text-align:left; cursor:pointer;">
+              &bull; Alex Mercer (SOC Analyst) &bull; amercer : Mercer_Zero!77
+            </button>
+            <button type="button" onclick="fillCredential('dschrute', 'BearsBeetsBSG#99')" style="background:#131722; border:1px solid #232c3f; color:#38bdf8; padding:0.35rem 0.5rem; border-radius:4px; font-family:var(--font-mono); font-size:0.7rem; text-align:left; cursor:pointer;">
+              &bull; Dwight Schrute (Security) &bull; dschrute : BearsBeetsBSG#99
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Administrator Identifier</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            class="input-control"
+            placeholder="e.g. sjenkins or admin"
+            required
+            autocomplete="off"
+            value="sjenkins"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Passkey / Access Token</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="input-control"
+            placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+            required
+            autocomplete="off"
+            value="P@ssw0rd!2026_Root"
+          />
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">
+          <span>Authenticate Session</span>
+          <span>&rarr;</span>
+        </button>
+      </form>
+
+      <!-- Asynchronous Forensics Result Box -->
+      <div id="resultBox" class="result-panel">
+        <div class="result-title">
+          <span>&#9888; 401 ACCESS DENIED &bull; INTRUSION LOGGED</span>
+        </div>
+        <p style="margin-bottom:0.6rem; color:#fecaca;">
+          Unauthorized administrative access attempt trapped &amp; persisted to MongoDB security ledger.
+        </p>
+
+        <div class="result-row">
+          <span class="result-label">Time of Login:</span>
+          <span id="logTime" class="result-val">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Captured Source IP:</span>
+          <span id="logIp" class="result-val">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Target Account:</span>
+          <span id="logUser" class="result-val">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Database Record:</span>
+          <span id="logDb" class="result-val" style="color:#38bdf8;">MongoDB: cyber_deception</span>
+        </div>
+
+        <a href="/" class="btn-soc-link" target="_blank" rel="noopener noreferrer">
+          <span>&#128737; View Live in Cyber Deception Framework Dashboard</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Connected to Cyber Deception Engine &bull; <a href="/">Return to SOC Console</a>
+    </div>
+  </div>
+
+  <script>
+    function fillCredential(user, pass) {
+      document.getElementById('username').value = user;
+      document.getElementById('password').value = pass;
+    }
+
+    const form = document.getElementById('adminAuthForm');
+    const resultBox = document.getElementById('resultBox');
+    const submitBtn = document.getElementById('submitBtn');
+    const logTime = document.getElementById('logTime');
+    const logIp = document.getElementById('logIp');
+    const logUser = document.getElementById('logUser');
+    const logDb = document.getElementById('logDb');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>&#128275; Verifying Credentials &bull; Accessing Vault...</span>';
+
+      try {
+        const response = await fetch('/superadmin/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json().catch(() => null);
+
+        const now = new Date();
+        const formattedTime = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+
+        logTime.innerText = formattedTime;
+        logIp.innerText = (data && data.incident && data.incident.ip) ? data.incident.ip : '127.0.0.1 [Local Machine]';
+        logUser.innerText = (data && data.incident && data.incident.target) ? data.incident.target : username;
+        logDb.innerText = 'Saved in MongoDB (cyber_deception)';
+
+        resultBox.style.display = 'block';
+
+        // Seamless deception: Redirect attacker to 50 accounts vault after 900ms
+        if (data && data.redirectUrl) {
+          submitBtn.style.background = '#10b981';
+          submitBtn.innerHTML = '<span>&#9989; ACCESS GRANTED &bull; OPENING VAULT...</span>';
+          setTimeout(() => {
+            window.location.href = data.redirectUrl;
+          }, 900);
+        } else {
+          resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+      } catch (err) {
+        window.location.href = '/superadmin/vault?user=' + encodeURIComponent(username);
+      } finally {
+        setTimeout(() => {
+          submitBtn.disabled = false;
+        }, 1200);
+      }
+    });
+  </script>
+</body>
+</html>
